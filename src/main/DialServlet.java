@@ -18,6 +18,9 @@
 package main;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,9 +39,16 @@ public class DialServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
     
+    protected String makeUrl(String number) throws UnsupportedEncodingException {
+    	// return "http://webrtc.lumicall.org/?dial=" + number;
+    	String sipUri = number + "@webrtc.lumicall.org";
+    	String sipUriEncoded = URLEncoder.encode(sipUri, "UTF-8");
+    	return "https://freephonebox.net/?dial=" + sipUriEncoded + "&video=false";
+    }
+    
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String number = request.getParameter("fullNumber");
-		response.sendRedirect("http://webrtc.lumicall.org/?dial=" + number);
+		response.sendRedirect(makeUrl(number));
 	}
 
 }
