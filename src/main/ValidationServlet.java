@@ -30,12 +30,17 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @WebServlet("/validationservlet")
 public class ValidationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	Logger logger;
 
     public ValidationServlet() {
-        // TODO Auto-generated constructor stub
+        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override
@@ -43,6 +48,7 @@ public class ValidationServlet extends HttpServlet {
     	String text = "";
     	String number = request.getParameter("number");
     	String country = request.getParameter("code");
+    	logger.debug("request for number: {} country code: {}", number, country);
     	PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
     	try {
     		PhoneNumber phoneNumber;
@@ -58,9 +64,10 @@ public class ValidationServlet extends HttpServlet {
     			  text = "error";
     		  }
     		} catch (NumberParseException e) {
-    		  System.err.println("NumberParseException was thrown: " + e.toString());
+    		  logger.error("NumberParseException was thrown", e);
     		  text = "error";
     		}
+    	logger.debug("finished validation for number: {} country code: {} result = ", number, country, text);
         response.setContentType("text/plain");  
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(text);  
